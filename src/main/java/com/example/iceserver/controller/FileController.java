@@ -1,8 +1,9 @@
 package com.example.iceserver.controller;
 
 import com.example.iceserver.common.Result;
-import com.example.iceserver.service.FileUploadService;
+import com.example.iceserver.service.FileService;
 import com.example.iceserver.utils.StringUtils;
+import com.qiniu.storage.model.DefaultPutRet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,13 +19,13 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @RequestMapping("/api/file")
-public class FileUploadController {
+public class FileController {
     @Autowired
-    private FileUploadService fileUploadService;
+    private FileService fileService;
 
-    String path = "";
+    private  DefaultPutRet putRet;
     @PostMapping("/upload")
-    public Result<Object> upload(@RequestParam("upfile") MultipartFile upfile){
+    public Result<DefaultPutRet> upload(@RequestParam("file") MultipartFile upfile){
         String fileName = upfile.getOriginalFilename();
         String voiceName = StringUtils.getRandomImgName(fileName);
         Optional.ofNullable(upfile).ifPresent((j)->{
@@ -34,9 +35,9 @@ public class FileUploadController {
             }catch (IOException e){
                 throw  new RuntimeException(e);
             }
-            path = fileUploadService.uploadQiniuFile(inputStream,voiceName, "xixi");
+            putRet = fileService.uploadQiniuFile(inputStream,voiceName, "xixi");
         });
-        log.info("-----图片地址为 ：{}",path);
-        return Result.success(path);
+        log.info("-----图片地址为 ：{}",putRet.key);
+        return Result.success(putRet);
     }
 }

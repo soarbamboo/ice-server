@@ -2,7 +2,7 @@ package com.example.iceserver.utils;
 
 import cn.hutool.core.lang.UUID;
 import com.example.iceserver.entity.Qiniu;
-import com.example.iceserver.service.FileUploadService;
+import com.example.iceserver.service.FileService;
 import com.qiniu.util.Auth;
 import com.qiniu.util.StringMap;
 import lombok.Data;
@@ -20,10 +20,10 @@ public class QiniuUtils {
     public static final String DOMAIN = "rip9fvdjd.hd-bkt.clouddn.com";
 
 
-    private final FileUploadService fieeFileService;
+    private final FileService fileService;
 
-    public QiniuUtils(FileUploadService fieeFileService) {
-        this.fieeFileService = fieeFileService;
+    public QiniuUtils(FileService fileService) {
+        this.fileService = fileService;
     }
 
     /**
@@ -47,7 +47,7 @@ public class QiniuUtils {
      * @param filodername
      * @return
      */
-    public String fileEquals(MultipartFile file, String filodername){
+    public Object fileEquals(MultipartFile file, String filodername){
         if(!file.isEmpty()){
             String fileName=file.getOriginalFilename();
             InputStream inputStream= null;
@@ -56,8 +56,8 @@ public class QiniuUtils {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            String path=fieeFileService.uploadQiniuFile(inputStream,fileName,filodername);
-            return path;
+            Object putRet =fileService.uploadQiniuFile(inputStream,fileName,filodername);
+            return putRet;
         }
         return null;
     }

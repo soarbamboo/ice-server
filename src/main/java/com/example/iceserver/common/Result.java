@@ -1,9 +1,10 @@
 package com.example.iceserver.common;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 @Data
-//@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Result <T> {
 
     private  Integer code;
@@ -26,15 +27,6 @@ public class Result <T> {
         Result<T> result = new Result<>(data);
         result.setCode(200);
         result.setMsg("成功");
-        result.setStatus(true);
-        return result;
-    }
-
-    public static <T> Result<T> successByToken(T data,String token){
-        Result<T> result = new Result<>(data);
-        result.setCode(200);
-        result.setMsg("成功");
-        result.setToken(token);
         result.setStatus(true);
         return result;
     }

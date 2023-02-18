@@ -2,10 +2,11 @@ package com.example.iceserver.entity;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
-public class File {
+public class File implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

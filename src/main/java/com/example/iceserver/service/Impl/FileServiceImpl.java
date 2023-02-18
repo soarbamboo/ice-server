@@ -1,6 +1,11 @@
 package com.example.iceserver.service.Impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.iceserver.entity.File;
+import com.example.iceserver.service.FileService;
 import com.example.iceserver.utils.QiniuUtils;
+import com.example.iceserver.mapper.FileMapper;
+import com.google.gson.Gson;
 import com.qiniu.common.QiniuException;
 import com.qiniu.common.Zone;
 import com.qiniu.http.Response;
@@ -8,21 +13,24 @@ import com.qiniu.storage.Configuration;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.storage.model.DefaultPutRet;
 import com.qiniu.util.Auth;
+import com.qiniu.util.StringMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Service
-public class FileUploadServiceImpl {
+public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements FileService {
     private UploadManager uploadManager;
 
     private String token;
 
     private Auth auth;
 
-    public void FieeFileServiceImpl() {
+    public  FileServiceImpl() {
         init();
     }
 
@@ -36,20 +44,18 @@ public class FileUploadServiceImpl {
         log.info("token->>::{}",token);
     }
     @Override
-    public String uploadQiniuFile(InputStream file, String path, String filename) {
+    public DefaultPutRet uploadQiniuFile(InputStream file, String path, String filename) {
         try {
             Response res = uploadManager.put(file,path,token,null,null);
+            log.info("res::{}",res);
             if(!res.isOK()){
                 throw new RuntimeException("七牛云上传出错" +res.toString());
             }
             DefaultPutRet putRet = new Gson().fromJson(res.bodyString(),DefaultPutRet.class);
-
-            String  filepath = QiniuUtils.DOMAIN+ "/" + putRet.key;
-
-            return filepath;
+            return putRet;
         }catch (QiniuException e){
             e.printStackTrace();
         }
-        return "";
+        return null;
     }
 }
