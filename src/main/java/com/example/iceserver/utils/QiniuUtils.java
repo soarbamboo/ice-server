@@ -16,8 +16,8 @@ import java.io.InputStream;
 public class QiniuUtils {
     public static final String ASSESS_KEY = "64S76RyQxSFey1dxvI6SytG8d9wRqf_WNfEHCdws";
     public static final String SECRET_KEY = "SQyZUiWmofP8cY_Fq5oht-mXlzCrPYHK8NwzsQia";
-    public static final String BUCKET = "fiee-base-img";
-    public static final String DOMAIN = "rip9fvdjd.hd-bkt.clouddn.com";
+    public static final String BUCKET = "lmice";
+    public static final String DOMAIN = "http://img.netbugs.cn";
 
 
     private final FileService fileService;
