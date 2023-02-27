@@ -2,6 +2,7 @@ package com.example.iceserver.controller;
 
 import com.example.iceserver.common.Result;
 import com.example.iceserver.service.FileService;
+import com.example.iceserver.utils.QiniuUtils;
 import com.example.iceserver.utils.StringUtils;
 import com.qiniu.storage.model.DefaultPutRet;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,7 @@ public class FileController {
             }catch (IOException e){
                 throw  new RuntimeException(e);
             }
-            putRet = fileService.uploadQiniuFile(inputStream,voiceName, "xixi");
+            putRet = fileService.uploadQiniuFile(inputStream, QiniuUtils.BUCKET+"/"+ voiceName);
         });
         log.info("-----图片地址为 ：{}",putRet.key);
         return Result.success(putRet);

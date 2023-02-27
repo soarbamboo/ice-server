@@ -36,7 +36,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
 
     private void init() {
         // 构造一个带指定Zone对象的配置类, 注意这里的Zone.zone0需要根据主机选择
-        Configuration cf = new Configuration(Zone.zone0());
+        Configuration cf = new Configuration(Zone.zone1());
         uploadManager = new UploadManager(cf);
         auth = Auth.create(QiniuUtils.ASSESS_KEY ,QiniuUtils.SECRET_KEY);
         // 根据命名空间生成的上传token
@@ -44,7 +44,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
         log.info("token->>::{}",token);
     }
     @Override
-    public DefaultPutRet uploadQiniuFile(InputStream file, String path, String filename) {
+    public DefaultPutRet uploadQiniuFile(InputStream file, String path) {
         try {
             Response res = uploadManager.put(file,path,token,null,null);
             log.info("res::{}",res);

@@ -56,7 +56,7 @@ public class QiniuUtils {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Object putRet =fileService.uploadQiniuFile(inputStream,fileName,filodername);
+            Object putRet =fileService.uploadQiniuFile(inputStream,fileName);
             return putRet;
         }
         return null;

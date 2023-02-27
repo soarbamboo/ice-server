@@ -7,6 +7,6 @@ import com.qiniu.storage.model.DefaultPutRet;
 import java.io.InputStream;
 
 public interface FileService extends IService<File> {
-    public DefaultPutRet uploadQiniuFile(InputStream file, String path, String filename);
+    public DefaultPutRet uploadQiniuFile(InputStream file, String path);
 
 }
