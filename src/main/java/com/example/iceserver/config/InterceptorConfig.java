@@ -17,6 +17,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry){
         registry.addInterceptor(jwtInterceptor())
                 .addPathPatterns("/api/**")
+                .addPathPatterns("/test")
                 .excludePathPatterns("/api/**"); //暂时放行所有
     }
     @Bean
