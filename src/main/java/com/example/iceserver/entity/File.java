@@ -29,10 +29,10 @@ public class File implements Serializable {
     private LocalDateTime updateTime;
 
 
-    @TableField(fill = FieldFill.INSERT)
+//    @TableField(fill = FieldFill.INSERT)
     private Long createUser;
 
 
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+//    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
 }

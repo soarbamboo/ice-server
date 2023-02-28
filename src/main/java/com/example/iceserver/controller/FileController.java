@@ -25,24 +25,24 @@ public class FileController {
     @Autowired
     private FileService fileService;
 
-    private  DefaultPutRet putRet;
     @PostMapping("/upload")
     public Result<FileDto> upload(@RequestParam("file") MultipartFile upfile ){
         String fileName = upfile.getOriginalFilename();
         String voiceName = StringUtils.getRandomImgName(fileName);
-        FileDto fileDto = new FileDto();
+        final FileDto[] fileDto = {new FileDto()};
         Optional.ofNullable(upfile).ifPresent((j)->{
             InputStream inputStream = null;
             try{
                 inputStream = upfile.getInputStream();
             }catch (IOException e){
                 throw  new RuntimeException(e);
+            }finally {
+                fileDto[0] = fileService.uploadQiniuFile(inputStream,  voiceName);
             }
-            putRet = fileService.uploadQiniuFile(inputStream,  voiceName);
-            fileDto.setKey(putRet.hash);
-            fileDto.setPath(QiniuUtils.DOMAIN + "/"+putRet.key);
         });
-        log.info("-----图片地址为 ：{}",QiniuUtils.DOMAIN + "/"+putRet.key);
-        return Result.success(fileDto);
+        if (fileDto[0].getKey() == null | fileDto[0].getPath() == null){
+            return  Result.error(400,"上传失败或当前文件已存在");
+        }
+        return Result.success(fileDto[0]);
     }
 }
