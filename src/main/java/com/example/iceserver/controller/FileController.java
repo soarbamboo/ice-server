@@ -1,6 +1,7 @@
 package com.example.iceserver.controller;
 
 import com.example.iceserver.common.Result;
+import com.example.iceserver.dto.FileDto;
 import com.example.iceserver.service.FileService;
 import com.example.iceserver.utils.QiniuUtils;
 import com.example.iceserver.utils.StringUtils;
@@ -26,9 +27,10 @@ public class FileController {
 
     private  DefaultPutRet putRet;
     @PostMapping("/upload")
-    public Result<DefaultPutRet> upload(@RequestParam("file") MultipartFile upfile){
+    public Result<FileDto> upload(@RequestParam("file") MultipartFile upfile ){
         String fileName = upfile.getOriginalFilename();
         String voiceName = StringUtils.getRandomImgName(fileName);
+        FileDto fileDto = new FileDto();
         Optional.ofNullable(upfile).ifPresent((j)->{
             InputStream inputStream = null;
             try{
@@ -36,9 +38,11 @@ public class FileController {
             }catch (IOException e){
                 throw  new RuntimeException(e);
             }
-            putRet = fileService.uploadQiniuFile(inputStream, QiniuUtils.BUCKET+"/"+ voiceName);
+            putRet = fileService.uploadQiniuFile(inputStream,  voiceName);
+            fileDto.setKey(putRet.hash);
+            fileDto.setPath(QiniuUtils.DOMAIN + "/"+putRet.key);
         });
-        log.info("-----图片地址为 ：{}",putRet.key);
-        return Result.success(putRet);
+        log.info("-----图片地址为 ：{}",QiniuUtils.DOMAIN + "/"+putRet.key);
+        return Result.success(fileDto);
     }
 }

@@ -30,10 +30,6 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
 
     private Auth auth;
 
-    public  FileServiceImpl() {
-        init();
-    }
-
     private void init() {
         // 构造一个带指定Zone对象的配置类, 注意这里的Zone.zone0需要根据主机选择
         Configuration cf = new Configuration(Zone.zone1());
@@ -45,6 +41,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
     }
     @Override
     public DefaultPutRet uploadQiniuFile(InputStream file, String path) {
+        init();
         try {
             Response res = uploadManager.put(file,path,token,null,null);
             log.info("res::{}",res);

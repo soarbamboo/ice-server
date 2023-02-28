@@ -18,7 +18,7 @@ public class StringUtils {
         // 获取文件后缀
         String suffix = fileName.substring(index);
         // 生成UUID
-        String uuid = UUID.randomUUID().toString();
+        String uuid = UUID.randomUUID().toString().replace("-","").substring(5,17);
         // 生成上传至云服务器的路径
         String path = uuid + suffix;  //code/duck/ 就是你七牛云上面新建的
         return path;
