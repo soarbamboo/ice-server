@@ -1,21 +1,24 @@
 package com.example.iceserver.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.iceserver.common.Result;
 import com.example.iceserver.dto.FileDto;
+import com.example.iceserver.dto.FileListDto;
+import com.example.iceserver.entity.File;
 import com.example.iceserver.service.FileService;
 import com.example.iceserver.utils.QiniuUtils;
 import com.example.iceserver.utils.StringUtils;
 import com.qiniu.storage.model.DefaultPutRet;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -25,6 +28,11 @@ public class FileController {
     @Autowired
     private FileService fileService;
 
+    /**
+     * 上传图片
+     * @param upfile
+     * @return
+     */
     @PostMapping("/upload")
     public Result<FileDto> upload(@RequestParam("file") MultipartFile upfile ){
         String fileName = upfile.getOriginalFilename();
@@ -44,5 +52,22 @@ public class FileController {
             return  Result.error(400,"上传失败或当前文件已存在");
         }
         return Result.success(fileDto[0]);
+    }
+
+
+    /**
+     * 分页获取图片列表
+     * @param current
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("/list")
+    public Result<Page> getList(int current,int pageSize){
+        // 分页构造器
+        Page<File> pageInfo = new Page<>(current,pageSize);
+        // 执行查询
+        fileService.page(pageInfo);
+
+        return  Result.success(pageInfo);
     }
 }

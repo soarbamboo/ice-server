@@ -26,7 +26,7 @@ public class Result <T> {
     public static <T> Result<T> success(T data) {
         Result<T> result = new Result<>(data);
         result.setCode(200);
-        result.setMsg("成功");
+        result.setMsg("请求成功！");
         result.setStatus(true);
         return result;
     }
@@ -34,7 +34,7 @@ public class Result <T> {
     public static  Result error(Integer code, String msg) {
         Result result = new Result();
         result.setCode(code | 400);
-        result.setMsg( msg == "" ? "xx" :msg);
+        result.setMsg( msg == "" ? "请求失败！" :msg);
         result.setStatus(false);
         return result;
     }
