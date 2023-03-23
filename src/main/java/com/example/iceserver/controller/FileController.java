@@ -62,7 +62,9 @@ public class FileController {
      * @return
      */
     @GetMapping("/list")
-    public Result<Page> getList(int current,int pageSize){
+    public Result<Page> getList(@RequestParam(name = "current", defaultValue = "1") int current,
+                                @RequestParam(name = "pageSize", defaultValue = "10") int pageSize
+    ){
         // 分页构造器
         Page<File> pageInfo = new Page<>(current,pageSize);
         // 执行查询
