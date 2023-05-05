@@ -2,6 +2,8 @@ package com.example.iceserver.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.iceserver.common.Result;
 import com.example.iceserver.dto.FileDto;
+import com.example.iceserver.dto.FileListDto;
+import com.example.iceserver.entity.Article;
 import com.example.iceserver.entity.File;
 import com.example.iceserver.service.FileService;
 import com.example.iceserver.utils.StringUtils;
@@ -12,6 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -55,14 +60,22 @@ public class FileController {
      * @return
      */
     @GetMapping("/list")
-    public Result<Page> getList(@RequestParam(name = "current", defaultValue = "1") int current,
+    public Result<Map<String, Object> > getList(@RequestParam(name = "current", defaultValue = "1") int current,
                                 @RequestParam(name = "pageSize", defaultValue = "10") int pageSize
     ){
-        // 分页构造器
-        Page<File> pageInfo = new Page<>(current,pageSize);
-        // 执行查询
-        fileService.page(pageInfo);
-
+        Map<String, Object>  pageInfo = fileService.gitFileList(current,pageSize);
         return  Result.success(pageInfo);
     }
+
+    @GetMapping ("/delete")
+    public Result<String> deleteFile(@RequestParam("fileNames") String fileNames){
+        String[] fileKeyArray = fileNames.split(",");
+        Boolean result = fileService.deleteQiniuFile(fileKeyArray);
+        if(!result){
+            return  Result.error(400,"删除失败！");
+        }
+        fileService.deleteFile(fileKeyArray);
+        return  Result.success("删除成功！");
+    }
+
 }
