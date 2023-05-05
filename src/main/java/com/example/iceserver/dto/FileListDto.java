@@ -8,11 +8,11 @@ import java.util.List;
 @Data
 public class FileListDto  {
 
-    private List<File> list;
+    private List<File> data;
 
     private int total;
 
-//    private int current;
+    private int current;
 
     private int pageSize;
 }
