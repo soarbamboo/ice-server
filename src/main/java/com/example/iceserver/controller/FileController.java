@@ -14,10 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -67,15 +64,20 @@ public class FileController {
         return  Result.success(pageInfo);
     }
 
-    @GetMapping ("/delete")
-    public Result<String> deleteFile(@RequestParam("fileNames") String fileNames){
-        String[] fileKeyArray = fileNames.split(",");
-        Boolean result = fileService.deleteQiniuFile(fileKeyArray);
+    @PostMapping ("/remove")
+    public Result<Map<String,Object>> deleteFile(@RequestBody Map parmas){
+        List<Long> idList = (List<Long>) parmas.get("ids");
+        if(idList.size() > 100){
+            return  Result.error(400,"删除失败！单次删除不得超过100条！");
+        }
+        Boolean result = fileService.deleteQiniuFile(idList);
         if(!result){
             return  Result.error(400,"删除失败！");
         }
-        fileService.deleteFile(fileKeyArray);
-        return  Result.success("删除成功！");
+        fileService.deleteFile(idList);
+        Map<String,Object> map = new HashMap<>();
+        map.put("msg","删除成功");
+        return  Result.success(map);
     }
 
 }

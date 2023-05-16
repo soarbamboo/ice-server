@@ -8,6 +8,7 @@ import com.example.iceserver.entity.File;
 import com.example.iceserver.service.FileService;
 import com.example.iceserver.utils.QiniuUtils;
 import com.example.iceserver.mapper.FileMapper;
+import com.example.iceserver.utils.StringUtils;
 import com.google.gson.Gson;
 import com.qiniu.common.QiniuException;
 import com.qiniu.common.Zone;
@@ -111,37 +112,49 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements Fi
        File file = new File();
        file.setLink(QiniuUtils.DOMAIN + "/"+putRet.key);
        file.setHash(putRet.hash);
+       file.setFileName(putRet.key);
        this.save(file);
        return true;
     }
 
     @Override
-    public Boolean deleteQiniuFile(String[] keyList) {
+    public Boolean deleteQiniuFile(List<Long> keyList) {
+        // 根据传入的id 查询文件名
+       List<File> files =  this.listByIds(keyList);
+       String[] keys = new String[keyList.size()];
+        for (int i = 0; i < files.size(); i++) {
+            String name = files.get(i).getFileName();
+            String link = files.get(i).getLink();
+            String filename= name==null ? link.replace(QiniuUtils.DOMAIN+"/",""):name;
+            keys[i] =filename;
+        }
+
         try {
             BucketManager.BatchOperations batchOperations = new BucketManager.BatchOperations();
-            batchOperations.addDeleteOp(QiniuUtils.BUCKET, keyList);
+            batchOperations.addDeleteOp(QiniuUtils.BUCKET, keys);
             Response response = bucketManager.batch(batchOperations);
             BatchStatus[] batchStatusList = response.jsonToObject(BatchStatus[].class);
-            for (int i = 0; i < keyList.length; i++) {
+            for (int i = 0; i < keys.length; i++) {
                 BatchStatus status = batchStatusList[i];
-                String key = keyList[i];
+                String key = keys[i];
                 System.out.print(key + "\t");
                 if (status.code == 200) {
                     System.out.println("delete success");
                     return true;
                 } else {
+                    System.out.println(status.data.error);
                     return false;
                 }
             }
         }catch (QiniuException e){
             e.printStackTrace();
         }
-        return false;
+        return true;
     }
 
     @Override
-    public Boolean deleteFile(String[] ids) {
-        this.removeByIds(Arrays.asList(ids));
+    public Boolean deleteFile(List<Long> ids) {
+        this.removeByIds(ids);
         return null;
     }
 

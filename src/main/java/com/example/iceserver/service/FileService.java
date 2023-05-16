@@ -5,6 +5,7 @@ import com.example.iceserver.dto.FileDto;
 import com.example.iceserver.entity.File;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 public interface FileService extends IService<File> {
@@ -12,7 +13,7 @@ public interface FileService extends IService<File> {
 
     public Map<String, Object> gitFileList(int current, int pageSize);
 
-    public Boolean deleteQiniuFile(String[] keyList);
+    public Boolean deleteQiniuFile(List<Long> keyList);
 
-    public Boolean deleteFile(String[] ids);
+    public Boolean deleteFile(List<Long> ids);
 }
