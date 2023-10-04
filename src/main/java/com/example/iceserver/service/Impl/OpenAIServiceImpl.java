@@ -5,8 +5,6 @@ import cn.hutool.http.*;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.example.iceserver.entity.OpenAI.OpenAIData;
-import com.example.iceserver.entity.OpenAI.OpenAIResponse;
 import com.example.iceserver.service.OpenAIService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -57,10 +55,19 @@ public class OpenAIServiceImpl implements OpenAIService {
                     .body(JSONUtil.toJsonStr(parmMap))
                     .execute()
                     .body();
+
             JSONObject jsonObject  = JSONUtil.parseObj(body);
+            log.info("jsonObject:",body);
             JSONArray choices = jsonObject.getJSONArray("choices");
-            JSONObject result = choices.get(0,JSONObject.class,Boolean.TRUE);
-            message = result.getJSONObject("message");
+            if(choices == null){
+                log.info(String.valueOf(jsonObject.getJSONObject("error")));
+                resultMap.put("status",false);
+                resultMap.put("msg",jsonObject.getJSONObject("error").getStr("code"));
+                return resultMap;
+            }else {
+                JSONObject result = choices.get(0,JSONObject.class,Boolean.TRUE);
+                message = result.getJSONObject("message");
+            }
         }catch (HttpException e){
             resultMap.put("status",false);
             resultMap.put("msg",e.getMessage());

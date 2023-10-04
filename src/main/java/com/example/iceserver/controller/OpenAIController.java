@@ -30,7 +30,7 @@ public class OpenAIController {
         String content = (String) result.get("result");
 
         if(!status){
-            return  Result.error(400, (String) result.get("status"));
+            return  Result.error(400, (String) result.get("msg"));
         }
         return  Result.success(content);
     }
