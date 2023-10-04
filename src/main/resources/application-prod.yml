@@ -29,9 +29,9 @@ ChatGPT:
   connect-timeout: 60000      # HTTP请求连接超时时间
   read-timeout: 60000         # HTTP请求读取超时时间
   variables:                  # 自定义变量:
-    reqUrl: https://api.openai.com/v1/chat/completions
-#    reqUrl: https://api.openai-proxy.com/v1/chat/completions
-    apiKey: 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      # 你的 OpenAI 的 API KEY
+#    reqUrl: https://api.openai.com/v1/chat/completions
+    reqUrl: https://openai.netbugs.cn/api/openai/v1/chat/completions
+    apiKey: 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     # 你的 OpenAI 的 API KEY
     model: gpt-3.5-turbo   # ChartGPT 的模型
     maxTokens: 500             # 最大 Token 数
     temperature: 1         # 该值越大每次返回的结果越随机，即相似度越小
